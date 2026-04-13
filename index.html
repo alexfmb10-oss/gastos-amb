@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gastos AMB">
+<title>Escáner de Gastos — AMB</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f0f0f;
+  --surface: #1a1a1a;
+  --surface2: #242424;
+  --border: #2e2e2e;
+  --accent: #c8f75e;
+  --accent2: #5eebf7;
+  --danger: #f75e5e;
+  --text: #f0f0f0;
+  --muted: #888;
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--sans); overscroll-behavior: none; }
+body { min-height: 100vh; }
+
+.app { max-width: 480px; margin: 0 auto; padding: 0 0 80px; }
+
+/* HEADER */
+.header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 14px;
+}
+.header-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--accent); display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.header h1 { font-size: 16px; font-weight: 600; color: var(--text); }
+.header p { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-top: 2px; }
+
+/* STATUS */
+.status-bar {
+  margin: 14px 20px 0;
+  padding: 11px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+.status-bar.show { display: flex; }
+.status-bar.loading { background: #1a2a1a; color: var(--accent); border: 1px solid #2a3a2a; }
+.status-bar.success { background: #1a2a1a; color: var(--accent); border: 1px solid #3a5a2a; }
+.status-bar.error { background: #2a1a1a; color: var(--danger); border: 1px solid #4a2a2a; }
+.spinner {
+  width: 14px; height: 14px; border: 2px solid currentColor;
+  border-top-color: transparent; border-radius: 50%;
+  animation: spin 0.7s linear infinite; flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* SECTION */
+.section { margin: 14px 20px 0; }
+.section-label {
+  font-family: var(--mono); font-size: 10px; color: var(--muted);
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* UPLOAD */
+.upload-box {
+  background: var(--surface);
+  border: 1.5px dashed var(--border);
+  border-radius: 14px;
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+}
+.upload-box:active { background: var(--surface2); border-color: var(--accent); }
+.upload-box input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.upload-cam { font-size: 40px; margin-bottom: 10px; }
+.upload-box strong { display: block; font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+.upload-box span { font-size: 12px; color: var(--muted); }
+
+/* PREVIEW */
+.preview-wrap { display: none; }
+.preview-wrap img {
+  width: 100%; max-height: 220px; object-fit: contain;
+  border-radius: 10px; border: 1px solid var(--border); background: var(--surface);
+}
+.btn-analyze {
+  width: 100%; margin-top: 10px;
+  padding: 14px;
+  background: var(--accent);
+  color: #0f0f0f;
+  border: none; border-radius: 10px;
+  font-family: var(--sans); font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: opacity 0.15s, transform 0.1s;
+}
+.btn-analyze:active { transform: scale(0.98); opacity: 0.9; }
+.btn-analyze:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn-retake {
+  width: 100%; margin-top: 8px;
+  padding: 11px;
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border); border-radius: 10px;
+  font-family: var(--sans); font-size: 13px; cursor: pointer;
+}
+.btn-retake:active { background: var(--surface2); }
+
+/* FORM */
+.form-section { display: none; }
+.field { margin-bottom: 10px; }
+.field label {
+  display: block; font-size: 11px; color: var(--muted);
+  font-family: var(--mono); letter-spacing: 0.06em;
+  text-transform: uppercase; margin-bottom: 5px;
+}
+.field input, .field select, .field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--text);
+  font-family: var(--sans); font-size: 14px;
+  -webkit-appearance: none; appearance: none;
+  transition: border-color 0.15s;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: var(--accent);
+}
+.field textarea { height: 70px; resize: none; }
+.field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+/* DEDUCIBLE BADGE */
+.ded-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600; font-family: var(--mono);
+  margin-bottom: 12px;
+}
+.ded-badge.yes { background: #1a2a0a; color: var(--accent); border: 1px solid #3a5a1a; }
+.ded-badge.no { background: #2a1010; color: var(--danger); border: 1px solid #5a2020; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* AMOUNTS */
+.amounts-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.amount-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 9px; padding: 10px 10px 8px;
+}
+.amount-card .alabel { font-size: 10px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.amount-card input {
+  width: 100%; background: transparent; border: none; color: var(--text);
+  font-size: 15px; font-weight: 600; font-family: var(--mono);
+  padding: 0;
+}
+.amount-card input:focus { outline: none; }
+.amount-card.highlight { border-color: var(--accent2); }
+.amount-card.highlight input { color: var(--accent2); }
+
+/* SAVE BTN */
+.btn-save {
+  width: 100%; padding: 15px;
+  background: var(--accent); color: #0f0f0f;
+  border: none; border-radius: 12px;
+  font-family: var(--sans); font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: opacity 0.15s, transform 0.1s;
+  margin-top: 4px;
+  letter-spacing: 0.01em;
+}
+.btn-save:active { transform: scale(0.98); }
+.btn-save:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn-new {
+  width: 100%; padding: 13px;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border); border-radius: 12px;
+  font-family: var(--sans); font-size: 14px;
+  cursor: pointer; margin-top: 8px;
+}
+.btn-new:active { background: var(--surface2); }
+
+/* SUCCESS SCREEN */
+.success-screen {
+  display: none; text-align: center; padding: 40px 20px;
+}
+.success-icon { font-size: 56px; margin-bottom: 16px; }
+.success-screen h2 { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+.success-screen p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.success-detail {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 16px; margin: 20px 0;
+  text-align: left;
+}
+.success-detail .row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; }
+.success-detail .row span:first-child { color: var(--muted); }
+.success-detail .row span:last-child { font-family: var(--mono); font-weight: 500; }
+
+.footer {
+  text-align: center; padding: 20px;
+  font-size: 11px; color: var(--muted); font-family: var(--mono);
+  border-top: 1px solid var(--border); margin-top: 20px;
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <div class="header-icon">📄</div>
+    <div style="flex:1">
+      <h1>Escáner de Comprobantes</h1>
+      <p>ALEX F. MAGUIÑA BUENO · CAL N° 91121</p>
+    </div>
+    <button onclick="showConfig()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px;">⚙️</button>
+  </div>
+
+  <div id="status-bar" class="status-bar"></div>
+
+  <!-- PANTALLA CONFIG -->
+  <div id="config-screen" style="display:none; padding: 32px 20px;">
+    <div style="text-align:center; margin-bottom:28px;">
+      <div style="font-size:40px; margin-bottom:12px;">🔑</div>
+      <h2 style="font-size:18px; font-weight:600; margin-bottom:8px;">Configuración inicial</h2>
+      <p style="font-size:13px; color:var(--muted); line-height:1.6;">Ingresa tu API key de Anthropic.<br>Se guarda solo en tu dispositivo.</p>
+    </div>
+    <div class="field">
+      <label>API Key de Anthropic</label>
+      <input type="password" id="cfg-apikey" placeholder="sk-ant-api03-..." style="font-family:var(--mono); font-size:12px;">
+    </div>
+    <p style="font-size:11px; color:var(--muted); margin-bottom:20px; line-height:1.6; font-family:var(--mono);">
+      Encuéntrala en platform.anthropic.com → API Keys.<br>
+      Solo se guarda en este dispositivo, nunca se comparte.
+    </p>
+    <button class="btn-save" onclick="saveConfig()">Guardar y continuar →</button>
+    <div id="cfg-status" style="margin-top:12px; font-size:13px; color:var(--danger); text-align:center; display:none;"></div>
+  </div>
+
+  <!-- PASO 1: UPLOAD -->
+  <div class="section" id="section-upload">
+    <div class="section-label">Paso 01 — Comprobante</div>
+    <div class="upload-box" id="upload-box">
+      <input type="file" id="file-input" accept="image/*" capture="environment">
+      <div class="upload-cam">📷</div>
+      <strong>Tomar foto o elegir imagen</strong>
+      <span>Boleta · Factura · Ticket · Recibo</span>
+    </div>
+    <div class="preview-wrap" id="preview-wrap">
+      <img id="preview-img" src="" alt="Comprobante">
+      <button class="btn-analyze" id="btn-analyze" onclick="scanReceipt()">
+        ✦ Analizar con IA
+      </button>
+      <button class="btn-retake" onclick="retake()">Cambiar imagen</button>
+    </div>
+  </div>
+
+  <!-- PASO 2: FORM -->
+  <div class="section form-section" id="section-form">
+    <div class="section-label">Paso 02 — Verificar datos</div>
+
+    <div id="ded-badge" class="ded-badge yes">
+      <span class="dot"></span><span id="ded-text">100% deducible</span>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Fecha</label>
+        <input type="text" id="f-fecha" placeholder="DD/MM/AAAA">
+      </div>
+      <div class="field">
+        <label>Mes</label>
+        <select id="f-mes">
+          <option>Enero</option><option>Febrero</option><option>Marzo</option>
+          <option>Abril</option><option>Mayo</option><option>Junio</option>
+          <option>Julio</option><option>Agosto</option><option>Septiembre</option>
+          <option>Octubre</option><option>Noviembre</option><option>Diciembre</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Proveedor / Emisor</label>
+      <input type="text" id="f-proveedor" placeholder="Nombre del negocio">
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>RUC emisor</label>
+        <input type="text" id="f-ruc" placeholder="20XXXXXXXXX" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label>N° Comprobante</label>
+        <input type="text" id="f-nro" placeholder="001-000123">
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Tipo documento</label>
+        <select id="f-tipo">
+          <option>Boleta</option>
+          <option>Factura</option>
+          <option>Recibo electrónico</option>
+          <option>Ticket</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Método de pago</label>
+        <select id="f-pago">
+          <option>Efectivo</option><option>Tarjeta</option>
+          <option>Yape</option><option>Plin</option>
+          <option>Transferencia</option><option>App</option><option>Otro</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Categoría</label>
+      <select id="f-categoria" onchange="updateDed()">
+        <option>Restaurantes / Alimentación</option>
+        <option>Tecnología / Equipos</option>
+        <option>Comunicaciones</option>
+        <option>Movilidad / Transporte</option>
+        <option>Servicios Profesionales</option>
+        <option>Libros / Capacitación</option>
+        <option>Notaría / Registros</option>
+        <option>Útiles de oficina</option>
+        <option>Salud / Bienestar</option>
+        <option>Entretenimiento / Personal</option>
+        <option>Otros Profesionales</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Descripción del gasto</label>
+      <textarea id="f-descripcion" placeholder="Describe el gasto y relación con tu actividad profesional"></textarea>
+    </div>
+
+    <div class="amounts-grid">
+      <div class="amount-card">
+        <div class="alabel">Base S/.</div>
+        <input type="number" id="f-base" placeholder="0.00" step="0.01" oninput="calcTotal()">
+      </div>
+      <div class="amount-card">
+        <div class="alabel">IGV S/.</div>
+        <input type="number" id="f-igv" placeholder="0.00" step="0.01" oninput="calcTotal()">
+      </div>
+      <div class="amount-card highlight">
+        <div class="alabel">Total S/.</div>
+        <input type="number" id="f-total" placeholder="0.00" step="0.01">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Observaciones</label>
+      <input type="text" id="f-obs" placeholder="Caso, cliente, nota adicional...">
+    </div>
+
+    <button class="btn-save" id="btn-save" onclick="saveToSheets()">
+      Guardar en Google Sheets →
+    </button>
+    <button class="btn-new" onclick="resetApp()">+ Nuevo comprobante</button>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-screen" id="success-screen">
+    <div class="success-icon">✅</div>
+    <h2>Guardado correctamente</h2>
+    <p>El gasto fue registrado en tu Google Sheet</p>
+    <div class="success-detail" id="success-detail"></div>
+    <button class="btn-save" onclick="resetApp()">+ Registrar otro comprobante</button>
+  </div>
+
+  <div class="footer">Control_Gastos_Deducibles_AMB · Google Sheets</div>
+</div>
+
+<script>
+const SPREADSHEET_ID = '15WZUlnW5IChtoqmC96IoBaUg_YNUGS0I';
+let ANTHROPIC_KEY = localStorage.getItem('amb_apikey') || '';
+
+const CREDS = {
+  client_email: "gastos-amb@gastos-amb.iam.gserviceaccount.com",
+  token_uri: "https://oauth2.googleapis.com/token",
+  private_key: "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC7bwGLVnVEhEHT\nTUHM1OBVQJ6pHhizftbcTzRH8dTT8rEIb2ay4FcEfp/SIYZmie5A5+q8xfu6ym2L\nv7VGeMSu8mwechRHsYZOLj2X3gxAnD0TjQjdMGfHf0SZ+3vSQq1MbkPNb49U51L7\nmiCp3djH1CF19OyGlAm6c2UEUBqKe5qlscD14ViwzmxHoeh+Jx/MD3rdDwXdPfIy\nD+e+UGYOzLGIY6pxNl3wFiRiQYI9ZVbq1ImlegUFTbyvG1JdrDQVM4witTick6Nz\nnF/6j8Qja0+m7fuurH5FBQjQvuU9BMZjR0TtJngOqT4L6nwWM/S4CvuNic1lzfY9\n1kkKxH6tAgMBAAECggEAJWVtubL/lTLNHl9S8k8DzkalEUl5tLBpJo4f+H3B0KLi\nmvP9GdHkUrd/5DE/q0w4Ttdm0JCw27EhP6l5fczBM0WXeFCbBr3e9dDIhbkuGSMD\nFZhFTTpn7lgQZCeWqhoXEQGMAhxQzOgVeLEk9LdYVfBXV71NBsHZGgwFeuGPlhLg\npnnoWD3OetFp825qyQmgFgF0awUJvvLIXZKaVDLVcE2H17Er7HfRnYAH1OlI+gQr\nF0375g+7Z3SG1dEMsHRiDuWOxJ3j3NZ2IgvXMqHPfj3zSFVv5m4SF5oVpt5GuyqH\nkdb7CHy6qOT8h5LL9KFQAQpq1BzPvYBz/ZiIpJYW2QKBgQD40ascO94fe/1g7JWe\nAbefSq4VS1IjrWSaSuG66l+dJ0Fzvp8eOJ6YvkIn7imwIlxjkCghcfchVMIAJx46\nQPJkhuw/BdO+V46HE9ljTh8y37d81WxRB+5AVzQTCsxqokL3NpSc4cHFKNO8v1rs\nYt+AdmWho6gMIC9yErfMZ1BJaQKBgQDA187tZegN6Vl4T7/CpLgxifg4GC6vw3Gc\nnZxkhaTgl2ksIk9daWRIZtQQF3JUAtLalpiXAwm17T/eukcPhGzlv0LPR7b/h3yR\nZdscxcsZf59pqH2fv7X5fWoIR80aJgvQtEpxqqb2ndAI0YFXkjfGN/nN8YE8uKHy\nkG+ZhNf+pQKBgEUXQ2JFpXosncEKMMl9RJWw0QIMtjQ98498d43FguNKgTw4lEp6\nAl/7hLc9xMmp4Omsn9gZozvYIz6Tnisi2avcY0FkxtU1ztfnRRf0G2mvAW5ifP9L\nKncnP8iB2R1LDTlEKKQfdAThP1pL8F1vXwx20+W8Ye9sCICufeb+USbxAoGAV80q\ngv5GFKdtPBEbXzT+RFfsMyYXg6E6BjPgtAgBVNy7XwPUHNTSewCOhzEVtdh/RlUQ\n7pjMgA+gZ/lqR09lAYn+kj+1u0xl1BGLHOOVoGtyGnpDkEuKQCjw8Qo4ATLXaFPe\nHTi0wk6CHLG+8S86w75St4jA7fOmkLlghoZsjZ0CgYB00hYkC0cLg49Ht+Di1MZ/\nK8DqdCXg1IjlgKLFs7cwH2B14SPp5W+abFKqhBgdRpjEhtlcuHO3qFUiEEl1AGWT\nDsem37soTolc7ec7NytIBsluCH9My8UrH6X7Lx5TWY02BJucR8rcX8Krf4PMrUex\njRe/oU3EIE2rDM8wBFoKdw==\n-----END PRIVATE KEY-----\n"
+};
+
+const DEDUC = {
+  'Restaurantes / Alimentación': 0.25,
+  'Tecnología / Equipos': 1.0,
+  'Comunicaciones': 0.8,
+  'Movilidad / Transporte': 1.0,
+  'Servicios Profesionales': 1.0,
+  'Libros / Capacitación': 1.0,
+  'Notaría / Registros': 1.0,
+  'Útiles de oficina': 1.0,
+  'Salud / Bienestar': 0.0,
+  'Entretenimiento / Personal': 0.0,
+  'Otros Profesionales': 1.0
+};
+
+let imgBase64 = null;
+
+function saveConfig() {
+  const key = document.getElementById("cfg-apikey").value.trim();
+  if (!key.startsWith("sk-ant-")) {
+    document.getElementById("cfg-status").textContent = "La key debe empezar con sk-ant-...";
+    document.getElementById("cfg-status").style.display = "block";
+    return;
+  }
+  localStorage.setItem("amb_apikey", key);
+  ANTHROPIC_KEY = key;
+  document.getElementById("config-screen").style.display = "none";
+  document.getElementById("section-upload").style.display = "block";
+}
+
+function checkConfig() {
+  if (!ANTHROPIC_KEY) {
+    document.getElementById("config-screen").style.display = "block";
+    document.getElementById("section-upload").style.display = "none";
+  }
+}
+
+window.addEventListener("load", checkConfig);
+
+function showConfig() {
+  document.getElementById("config-screen").style.display = "block";
+  document.getElementById("section-upload").style.display = "none";
+  document.getElementById("section-form").style.display = "none";
+  document.getElementById("success-screen").style.display = "none";
+  if (ANTHROPIC_KEY) document.getElementById("cfg-apikey").value = ANTHROPIC_KEY;
+}
+
+function setStatus(msg, type) {
+  const el = document.getElementById('status-bar');
+  el.className = 'status-bar show ' + type;
+  el.innerHTML = type === 'loading' ? `<div class="spinner"></div>${msg}` : msg;
+}
+function clearStatus() {
+  document.getElementById('status-bar').className = 'status-bar';
+}
+
+document.getElementById('file-input').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    imgBase64 = ev.target.result.split(',')[1];
+    document.getElementById('preview-img').src = ev.target.result;
+    document.getElementById('upload-box').style.display = 'none';
+    document.getElementById('preview-wrap').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+});
+
+function retake() {
+  imgBase64 = null;
+  document.getElementById('file-input').value = '';
+  document.getElementById('upload-box').style.display = 'block';
+  document.getElementById('preview-wrap').style.display = 'none';
+}
+
+function calcTotal() {
+  const b = parseFloat(document.getElementById('f-base').value) || 0;
+  const i = parseFloat(document.getElementById('f-igv').value) || 0;
+  document.getElementById('f-total').value = (b + i).toFixed(2);
+}
+
+function updateDed() {
+  const cat = document.getElementById('f-categoria').value;
+  const pct = DEDUC[cat] ?? 0;
+  const badge = document.getElementById('ded-badge');
+  const text = document.getElementById('ded-text');
+  if (pct > 0) {
+    badge.className = 'ded-badge yes';
+    text.textContent = pct === 1 ? '100% deducible' : `${Math.round(pct*100)}% deducible`;
+  } else {
+    badge.className = 'ded-badge no';
+    text.textContent = 'No deducible';
+  }
+}
+
+function setSelect(id, val) {
+  const sel = document.getElementById(id);
+  const low = val.toLowerCase();
+  for (let i = 0; i < sel.options.length; i++) {
+    if (sel.options[i].value.toLowerCase().includes(low.split('/')[0].trim())) {
+      sel.selectedIndex = i; return;
+    }
+  }
+}
+
+function fillForm(data) {
+  if (data.fecha) document.getElementById('f-fecha').value = data.fecha;
+  if (data.mes) setSelect('f-mes', data.mes);
+  else if (data.fecha) {
+    const p = data.fecha.split('/');
+    if (p[1]) document.getElementById('f-mes').selectedIndex = Math.max(0, parseInt(p[1]) - 1);
+  }
+  if (data.proveedor) document.getElementById('f-proveedor').value = data.proveedor;
+  if (data.ruc) document.getElementById('f-ruc').value = data.ruc;
+  if (data.numero) document.getElementById('f-nro').value = data.numero;
+  if (data.tipo) setSelect('f-tipo', data.tipo);
+  if (data.categoria) setSelect('f-categoria', data.categoria);
+  if (data.descripcion) document.getElementById('f-descripcion').value = data.descripcion;
+  if (data.base != null) document.getElementById('f-base').value = parseFloat(data.base).toFixed(2);
+  if (data.igv != null) document.getElementById('f-igv').value = parseFloat(data.igv).toFixed(2);
+  if (data.total != null) document.getElementById('f-total').value = parseFloat(data.total).toFixed(2);
+  else calcTotal();
+  if (data.pago) setSelect('f-pago', data.pago);
+  updateDed();
+}
+
+async function scanReceipt() {
+  if (!imgBase64) return;
+  document.getElementById('btn-analyze').disabled = true;
+  setStatus('Analizando comprobante...', 'loading');
+
+  const prompt = `Eres un asistente fiscal peruano. Analiza este comprobante y devuelve SOLO un JSON sin texto adicional ni backticks:
+{"fecha":"DD/MM/AAAA","proveedor":"nombre emisor","ruc":"RUC 11 dígitos si visible","numero":"serie-correlativo","tipo":"Boleta|Factura|Ticket|Recibo electrónico","categoria":"una de: Restaurantes / Alimentación|Tecnología / Equipos|Comunicaciones|Movilidad / Transporte|Servicios Profesionales|Libros / Capacitación|Notaría / Registros|Útiles de oficina|Salud / Bienestar|Entretenimiento / Personal|Otros Profesionales","descripcion":"descripción breve","base":numero,"igv":numero,"total":numero,"pago":"Efectivo|Tarjeta|Yape|Plin|Transferencia|App|Otro"}`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': ANTHROPIC_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-allow-browser': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: imgBase64 } },
+            { type: 'text', text: prompt }
+          ]
+        }]
+      })
+    });
+
+    const result = await resp.json();
+    if (result.error) throw new Error(result.error.message);
+    const text = result.content.find(b => b.type === 'text')?.text || '{}';
+    const data = JSON.parse(text.replace(/```json|```/g, '').trim());
+    fillForm(data);
+    document.getElementById('section-form').style.display = 'block';
+    setStatus('✦ Datos extraídos. Verifica y corrige si es necesario.', 'success');
+    setTimeout(clearStatus, 4000);
+    document.getElementById('section-form').scrollIntoView({ behavior: 'smooth' });
+  } catch (err) {
+    if (err.message && err.message.includes('API key')) {
+      setStatus('Falta configurar la API key de Anthropic en el archivo HTML.', 'error');
+    } else {
+      setStatus('Error al analizar: ' + err.message, 'error');
+    }
+    document.getElementById('btn-analyze').disabled = false;
+  }
+}
+
+async function getToken() {
+  const now = Math.floor(Date.now() / 1000);
+  const b64u = s => btoa(s).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+  const hdr = b64u(JSON.stringify({alg:'RS256',typ:'JWT'}));
+  const pay = b64u(JSON.stringify({iss:CREDS.client_email,scope:'https://www.googleapis.com/auth/spreadsheets',aud:CREDS.token_uri,exp:now+3600,iat:now}));
+  const sig_input = `${hdr}.${pay}`;
+  const key_str = CREDS.private_key.replace('-----BEGIN PRIVATE KEY-----','').replace('-----END PRIVATE KEY-----','').replace(/\s/g,'');
+  const key_der = Uint8Array.from(atob(key_str), c => c.charCodeAt(0));
+  const crypto_key = await crypto.subtle.importKey('pkcs8', key_der.buffer, {name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'}, false, ['sign']);
+  const sig = await crypto.subtle.sign('RSASSA-PKCS1-v1_5', crypto_key, new TextEncoder().encode(sig_input));
+  const sig_b64 = btoa(String.fromCharCode(...new Uint8Array(sig))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+  const jwt = `${sig_input}.${sig_b64}`;
+  const r = await fetch(CREDS.token_uri, {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:`grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`});
+  const d = await r.json();
+  return d.access_token;
+}
+
+async function saveToSheets() {
+  setStatus('Guardando en Google Sheets...', 'loading');
+  document.getElementById('btn-save').disabled = true;
+
+  try {
+    const token = await getToken();
+    const cat = document.getElementById('f-categoria').value;
+    const pct = DEDUC[cat] ?? 0;
+    const base = parseFloat(document.getElementById('f-base').value) || 0;
+    const igv = parseFloat(document.getElementById('f-igv').value) || 0;
+    const total = parseFloat(document.getElementById('f-total').value) || (base + igv);
+    const deducible = parseFloat((total * pct).toFixed(2));
+    const proveedor = document.getElementById('f-proveedor').value;
+    const fecha = document.getElementById('f-fecha').value;
+
+    const row = [
+      fecha,
+      document.getElementById('f-mes').value,
+      proveedor,
+      document.getElementById('f-ruc').value,
+      document.getElementById('f-nro').value,
+      document.getElementById('f-tipo').value,
+      cat,
+      document.getElementById('f-descripcion').value,
+      base, igv, total, pct, deducible,
+      document.getElementById('f-pago').value,
+      document.getElementById('f-obs').value
+    ];
+
+    const sheetName = encodeURIComponent('📥 REGISTRO');
+    const countResp = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${sheetName}!A:A?majorDimension=COLUMNS`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    const countData = await countResp.json();
+    const nextRow = Math.max((countData.values?.[0]?.length || 3) + 1, 4);
+
+    const saveResp = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${sheetName}!A${nextRow}:O${nextRow}?valueInputOption=USER_ENTERED`,
+      {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ values: [row] })
+      }
+    );
+
+    if (!saveResp.ok) {
+      const e = await saveResp.json();
+      throw new Error(e.error?.message || 'Error Sheets');
+    }
+
+    document.getElementById('section-upload').style.display = 'none';
+    document.getElementById('section-form').style.display = 'none';
+    clearStatus();
+
+    document.getElementById('success-detail').innerHTML = `
+      <div class="row"><span>Proveedor</span><span>${proveedor}</span></div>
+      <div class="row"><span>Fecha</span><span>${fecha}</span></div>
+      <div class="row"><span>Total</span><span>S/. ${total.toFixed(2)}</span></div>
+      <div class="row"><span>Deducible</span><span>S/. ${deducible.toFixed(2)}</span></div>
+      <div class="row"><span>Fila en Sheet</span><span>#${nextRow}</span></div>
+    `;
+    document.getElementById('success-screen').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  } catch (err) {
+    setStatus('Error al guardar: ' + err.message, 'error');
+    document.getElementById('btn-save').disabled = false;
+  }
+}
+
+function resetApp() {
+  imgBase64 = null;
+  document.getElementById('file-input').value = '';
+  document.getElementById('upload-box').style.display = 'block';
+  document.getElementById('preview-wrap').style.display = 'none';
+  document.getElementById('section-upload').style.display = 'block';
+  document.getElementById('section-form').style.display = 'none';
+  document.getElementById('success-screen').style.display = 'none';
+  document.getElementById('btn-analyze').disabled = false;
+  document.getElementById('btn-save').disabled = false;
+  clearStatus();
+  ['f-fecha','f-proveedor','f-ruc','f-nro','f-descripcion','f-base','f-igv','f-total','f-obs'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
