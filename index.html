@@ -242,8 +242,7 @@ body { min-height: 100vh; }
       <input type="password" id="cfg-apikey" placeholder="sk-ant-api03-..." style="font-family:var(--mono); font-size:12px;">
     </div>
     <p style="font-size:11px; color:var(--muted); margin-bottom:20px; line-height:1.6; font-family:var(--mono);">
-      Encuéntrala en platform.anthropic.com → API Keys.<br>
-      Solo se guarda en este dispositivo, nunca se comparte.
+      Se guarda solo en este dispositivo. Nunca se comparte.
     </p>
     <button class="btn-save" onclick="saveConfig()">Guardar y continuar →</button>
     <div id="cfg-status" style="margin-top:12px; font-size:13px; color:var(--danger); text-align:center; display:none;"></div>
@@ -442,6 +441,7 @@ function showConfig() {
   document.getElementById("section-form").style.display = "none";
   document.getElementById("success-screen").style.display = "none";
   if (ANTHROPIC_KEY) document.getElementById("cfg-apikey").value = ANTHROPIC_KEY;
+
 }
 
 function setStatus(msg, type) {
@@ -533,19 +533,15 @@ async function scanReceipt() {
 {"fecha":"DD/MM/AAAA","proveedor":"nombre emisor","ruc":"RUC 11 dígitos si visible","numero":"serie-correlativo","tipo":"Boleta|Factura|Ticket|Recibo electrónico","categoria":"una de: Restaurantes / Alimentación|Tecnología / Equipos|Comunicaciones|Movilidad / Transporte|Servicios Profesionales|Libros / Capacitación|Notaría / Registros|Útiles de oficina|Salud / Bienestar|Entretenimiento / Personal|Otros Profesionales","descripcion":"descripción breve","base":numero,"igv":numero,"total":numero,"pago":"Efectivo|Tarjeta|Yape|Plin|Transferencia|App|Otro"}`;
 
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    const resp = await fetch('https://gastos-amb.alexfmb10.workers.dev', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-allow-browser': 'true'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{
-          role: 'user',
+        image: imgBase64,
+        prompt: prompt,
+        apiKey: ANTHROPIC_KEY
+      })
+    });
           content: [
             { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: imgBase64 } },
             { type: 'text', text: prompt }
@@ -555,8 +551,8 @@ async function scanReceipt() {
     });
 
     const result = await resp.json();
-    if (result.error) throw new Error(result.error.message);
-    const text = result.content.find(b => b.type === 'text')?.text || '{}';
+    if (result.error) throw new Error(result.error);
+    const text = result.text || '{}';
     const data = JSON.parse(text.replace(/```json|```/g, '').trim());
     fillForm(data);
     document.getElementById('section-form').style.display = 'block';
