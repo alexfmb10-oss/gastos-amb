@@ -389,7 +389,7 @@ body { min-height: 100vh; }
 
 <script>
 const SPREADSHEET_ID = '15WZUlnW5IChtoqmC96IoBaUg_YNUGS0I';
-let ANTHROPIC_KEY = localStorage.getItem('amb_apikey') || '';
+let ANTHROPIC_KEY = 'configured';  // Key is stored in Cloudflare Worker
 
 const CREDS = {
   client_email: "gastos-amb@gastos-amb.iam.gserviceaccount.com",
@@ -427,10 +427,9 @@ function saveConfig() {
 }
 
 function checkConfig() {
-  if (!ANTHROPIC_KEY) {
-    document.getElementById("config-screen").style.display = "block";
-    document.getElementById("section-upload").style.display = "none";
-  }
+  // API key is stored securely in Cloudflare Worker - no config needed
+  document.getElementById("config-screen").style.display = "none";
+  document.getElementById("section-upload").style.display = "block";
 }
 
 window.addEventListener("load", checkConfig);
@@ -538,8 +537,7 @@ async function scanReceipt() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         image: imgBase64,
-        prompt: prompt,
-        apiKey: ANTHROPIC_KEY
+        prompt: prompt
       })
     });
           content: [
