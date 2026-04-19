@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Escáner de Gastos — AMB</title>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gastos AMB">
+<title>Escaner de Gastos AMB</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0f0f0f;--sur:#1a1a1a;--sur2:#242424;--brd:#2e2e2e;--acc:#c8f75e;--acc2:#5eebf7;--dan:#f75e5e;--txt:#f0f0f0;--mut:#888;--mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif}
@@ -35,7 +37,6 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:var(--sa
 .pwrap{display:none}
 .pwrap img{width:100%;max-height:220px;object-fit:contain;border-radius:10px;border:1px solid var(--brd);background:var(--sur)}
 .btn-ana{width:100%;margin-top:10px;padding:14px;background:var(--acc);color:#0f0f0f;border:none;border-radius:10px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer}
-.btn-ana:active{opacity:.9}
 .btn-ana:disabled{opacity:.35;cursor:not-allowed}
 .btn-ret{width:100%;margin-top:8px;padding:11px;background:transparent;color:var(--mut);border:1px solid var(--brd);border-radius:10px;font-family:var(--sans);font-size:13px;cursor:pointer}
 .fsec{display:none}
@@ -58,7 +59,6 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:var(--sa
 .acard.hl{border-color:var(--acc2)}
 .acard.hl input{color:var(--acc2)}
 .btn-sav{width:100%;padding:15px;background:var(--acc);color:#0f0f0f;border:none;border-radius:12px;font-family:var(--sans);font-size:15px;font-weight:700;cursor:pointer;margin-top:4px}
-.btn-sav:active{opacity:.9}
 .btn-sav:disabled{opacity:.35;cursor:not-allowed}
 .btn-new{width:100%;padding:13px;background:transparent;color:var(--mut);border:1px solid var(--brd);border-radius:12px;font-family:var(--sans);font-size:14px;cursor:pointer;margin-top:8px}
 .okscr{display:none;text-align:center;padding:40px 20px}
@@ -76,14 +76,9 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:var(--sa
 <div class="app">
   <div class="header">
     <div class="hico">📄</div>
-    <div style="flex:1">
-      <h1>Escáner de Comprobantes</h1>
-      <p>ALEX F. MAGUIÑA BUENO · CAL N° 91121</p>
-    </div>
+    <div style="flex:1"><h1>Escaner de Comprobantes</h1><p>ALEX F. MAGUINA BUENO · CAL N 91121</p></div>
   </div>
-
   <div id="sbar" class="sbar"></div>
-
   <div class="sec" id="sup">
     <div class="slbl">Paso 01 — Comprobante</div>
     <div class="ubox" id="ubox">
@@ -98,7 +93,6 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:var(--sa
       <button class="btn-ret" id="bret">Cambiar imagen</button>
     </div>
   </div>
-
   <div class="sec fsec" id="sform">
     <div class="slbl">Paso 02 — Verificar datos</div>
     <div id="dbadge" class="dbadge yes"><span class="dot"></span><span id="dtxt">100% deducible</span></div>
@@ -106,27 +100,26 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:var(--sa
       <div class="fld"><label>Fecha</label><input type="text" id="ffecha" placeholder="DD/MM/AAAA"></div>
       <div class="fld"><label>Mes</label><select id="fmes"><option>Enero</option><option>Febrero</option><option>Marzo</option><option>Abril</option><option>Mayo</option><option>Junio</option><option>Julio</option><option>Agosto</option><option>Septiembre</option><option>Octubre</option><option>Noviembre</option><option>Diciembre</option></select></div>
     </div>
-    <div class="fld"><label>Proveedor / Emisor</label><input type="text" id="fprov" placeholder="Nombre del negocio"></div>
+    <div class="fld"><label>Proveedor</label><input type="text" id="fprov" placeholder="Nombre del negocio"></div>
     <div class="r2">
-      <div class="fld"><label>RUC emisor</label><input type="text" id="fruc" placeholder="20XXXXXXXXX" inputmode="numeric"></div>
-      <div class="fld"><label>N° Comprobante</label><input type="text" id="fnro" placeholder="001-000123"></div>
+      <div class="fld"><label>RUC</label><input type="text" id="fruc" placeholder="20XXXXXXXXX" inputmode="numeric"></div>
+      <div class="fld"><label>N Comprobante</label><input type="text" id="fnro" placeholder="001-000123"></div>
     </div>
     <div class="r2">
-      <div class="fld"><label>Tipo doc.</label><select id="ftipo"><option>Boleta</option><option>Factura</option><option>Recibo electrónico</option><option>Ticket</option><option>Otro</option></select></div>
-      <div class="fld"><label>Método pago</label><select id="fpago"><option>Efectivo</option><option>Tarjeta</option><option>Yape</option><option>Plin</option><option>Transferencia</option><option>App</option><option>Otro</option></select></div>
+      <div class="fld"><label>Tipo doc.</label><select id="ftipo"><option>Boleta</option><option>Factura</option><option>Recibo electronico</option><option>Ticket</option><option>Otro</option></select></div>
+      <div class="fld"><label>Metodo pago</label><select id="fpago"><option>Efectivo</option><option>Tarjeta</option><option>Yape</option><option>Plin</option><option>Transferencia</option><option>App</option><option>Otro</option></select></div>
     </div>
-    <div class="fld"><label>Categoría</label><select id="fcat"><option>Restaurantes / Alimentación</option><option>Tecnología / Equipos</option><option>Comunicaciones</option><option>Movilidad / Transporte</option><option>Servicios Profesionales</option><option>Libros / Capacitación</option><option>Notaría / Registros</option><option>Útiles de oficina</option><option>Salud / Bienestar</option><option>Entretenimiento / Personal</option><option>Otros Profesionales</option></select></div>
-    <div class="fld"><label>Descripción</label><textarea id="fdesc" placeholder="Describe el gasto y su relación con tu actividad profesional"></textarea></div>
+    <div class="fld"><label>Categoria</label><select id="fcat"><option>Restaurantes / Alimentacion</option><option>Tecnologia / Equipos</option><option>Comunicaciones</option><option>Movilidad / Transporte</option><option>Servicios Profesionales</option><option>Libros / Capacitacion</option><option>Notaria / Registros</option><option>Utiles de oficina</option><option>Salud / Bienestar</option><option>Entretenimiento / Personal</option><option>Otros Profesionales</option></select></div>
+    <div class="fld"><label>Descripcion</label><textarea id="fdesc" placeholder="Describe el gasto"></textarea></div>
     <div class="amtg">
-      <div class="acard"><div class="al">Base S/.</div><input type="number" id="fbase" placeholder="0.00" step="0.01" id="fbase"></div>
+      <div class="acard"><div class="al">Base S/.</div><input type="number" id="fbase" placeholder="0.00" step="0.01"></div>
       <div class="acard"><div class="al">IGV S/.</div><input type="number" id="figv" placeholder="0.00" step="0.01"></div>
       <div class="acard hl"><div class="al">Total S/.</div><input type="number" id="ftotal" placeholder="0.00" step="0.01"></div>
     </div>
-    <div class="fld"><label>Observaciones</label><input type="text" id="fobs" placeholder="Caso, cliente, nota adicional..."></div>
-    <button class="btn-sav" id="bsav">Guardar en Google Sheets →</button>
+    <div class="fld"><label>Observaciones</label><input type="text" id="fobs" placeholder="Nota adicional..."></div>
+    <button class="btn-sav" id="bsav">Guardar en Google Sheets</button>
     <button class="btn-new" id="bnew">+ Nuevo comprobante</button>
   </div>
-
   <div class="okscr" id="okscr">
     <div class="okico">✅</div>
     <h2>Guardado correctamente</h2>
@@ -134,212 +127,112 @@ html,body{height:100%;background:var(--bg);color:var(--txt);font-family:var(--sa
     <div class="okdet" id="okdet"></div>
     <button class="btn-sav" id="bok">+ Registrar otro comprobante</button>
   </div>
-
   <div class="footer">Control_Gastos_Deducibles_AMB · Google Sheets</div>
 </div>
-
 <script>
-var SHEET_ID = '15WZUlnW5IChtoqmC96IoBaUg_YNUGS0I';
-var WORKER = 'https://gastos-amb.alexfmb10.workers.dev';
-var imgB64 = null;
-
-var DEDUC = {
-  'Restaurantes / Alimentación': 0.25,
-  'Tecnología / Equipos': 1,
-  'Comunicaciones': 0.8,
-  'Movilidad / Transporte': 1,
-  'Servicios Profesionales': 1,
-  'Libros / Capacitación': 1,
-  'Notaría / Registros': 1,
-  'Útiles de oficina': 1,
-  'Salud / Bienestar': 0,
-  'Entretenimiento / Personal': 0,
-  'Otros Profesionales': 1
-};
-
-var CREDS_EMAIL = 'gastos-amb@gastos-amb.iam.gserviceaccount.com';
-var CREDS_TOKEN_URI = 'https://oauth2.googleapis.com/token';
-var CREDS_KEY = '-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC7bwGLVnVEhEHT\nTUHM1OBVQJ6pHhizftbcTzRH8dTT8rEIb2ay4FcEfp/SIYZmie5A5+q8xfu6ym2L\nv7VGeMSu8mwechRHsYZOLj2X3gxAnD0TjQjdMGfHf0SZ+3vSQq1MbkPNb49U51L7\nmiCp3djH1CF19OyGlAm6c2UEUBqKe5qlscD14ViwzmxHoeh+Jx/MD3rdDwXdPfIy\nD+e+UGYOzLGIY6pxNl3wFiRiQYI9ZVbq1ImlegUFTbyvG1JdrDQVM4witTick6Nz\nnF/6j8Qja0+m7fuurH5FBQjQvuU9BMZjR0TtJngOqT4L6nwWM/S4CvuNic1lzfY9\n1kkKxH6tAgMBAAECggEAJWVtubL/lTLNHl9S8k8DzkalEUl5tLBpJo4f+H3B0KLi\nmvP9GdHkUrd/5DE/q0w4Ttdm0JCw27EhP6l5fczBM0WXeFCbBr3e9dDIhbkuGSMD\nFZhFTTpn7lgQZCeWqhoXEQGMAhxQzOgVeLEk9LdYVfBXV71NBsHZGgwFeuGPlhLg\npnnoWD3OetFp825qyQmgFgF0awUJvvLIXZKaVDLVcE2H17Er7HfRnYAH1OlI+gQr\nF0375g+7Z3SG1dEMsHRiDuWOxJ3j3NZ2IgvXMqHPfj3zSFVv5m4SF5oVpt5GuyqH\nkdb7CHy6qOT8h5LL9KFQAQpq1BzPvYBz/ZiIpJYW2QKBgQD40ascO94fe/1g7JWe\nAbefSq4VS1IjrWSaSuG66l+dJ0Fzvp8eOJ6YvkIn7imwIlxjkCghcfchVMIAJx46\nQPJkhuw/BdO+V46HE9ljTh8y37d81WxRB+5AVzQTCsxqokL3NpSc4cHFKNO8v1rs\nYt+AdmWho6gMIC9yErfMZ1BJaQKBgQDA187tZegN6Vl4T7/CpLgxifg4GC6vw3Gc\nnZxkhaTgl2ksIk9daWRIZtQQF3JUAtLalpiXAwm17T/eukcPhGzlv0LPR7b/h3yR\nZdscxcsZf59pqH2fv7X5fWoIR80aJgvQtEpxqqb2ndAI0YFXkjfGN/nN8YE8uKHy\nkG+ZhNf+pQKBgEUXQ2JFpXosncEKMMl9RJWw0QIMtjQ98498d43FguNKgTw4lEp6\nAl/7hLc9xMmp4Omsn9gZozvYIz6Tnisi2avcY0FkxtU1ztfnRRf0G2mvAW5ifP9L\nKncnP8iB2R1LDTlEKKQfdAThP1pL8F1vXwx20+W8Ye9sCICufeb+USbxAoGAV80q\ngv5GFKdtPBEbXzT+RFfsMyYXg6E6BjPgtAgBVNy7XwPUHNTSewCOhzEVtdh/RlUQ\n7pjMgA+gZ/lqR09lAYn+kj+1u0xl1BGLHOOVoGtyGnpDkEuKQCjw8Qo4ATLXaFPe\nHTi0wk6CHLG+8S86w75St4jA7fOmkLlghoZsjZ0CgYB00hYkC0cLg49Ht+Di1MZ/\nK8DqdCXg1IjlgKLFs7cwH2B14SPp5W+abFKqhBgdRpjEhtlcuHO3qFUiEEl1AGWT\nDsem37soTolc7ec7NytIBsluCH9My8UrH6X7Lx5TWY02BJucR8rcX8Krf4PMrUex\njRe/oU3EIE2rDM8wBFoKdw==\n-----END PRIVATE KEY-----\n';
-
-function setStatus(msg, type) {
-  var el = document.getElementById('sbar');
-  el.className = 'sbar show ' + type;
-  el.innerHTML = type === 'loading' ? '<div class="spin"></div>' + msg : msg;
-}
-function clearStatus() { document.getElementById('sbar').className = 'sbar'; }
-
-function gv(id) { return document.getElementById(id); }
-
-gv('finput').addEventListener('change', function(e) {
-  var file = e.target.files[0];
-  if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(ev) {
-    imgB64 = ev.target.result.split(',')[1];
-    gv('pimg').src = ev.target.result;
-    gv('ubox').style.display = 'none';
-    gv('pwrap').style.display = 'block';
-  };
-  reader.readAsDataURL(file);
-});
-
-gv('bret').addEventListener('click', function() {
-  imgB64 = null;
-  gv('finput').value = '';
-  gv('ubox').style.display = 'block';
-  gv('pwrap').style.display = 'none';
-});
-
-gv('fbase').addEventListener('input', calcTotal);
-gv('figv').addEventListener('input', calcTotal);
-gv('fcat').addEventListener('change', updateDed);
-gv('bana').addEventListener('click', scanReceipt);
-gv('bsav').addEventListener('click', saveToSheets);
-gv('bnew').addEventListener('click', resetApp);
-gv('bok').addEventListener('click', resetApp);
-
-function calcTotal() {
-  var b = parseFloat(gv('fbase').value) || 0;
-  var i = parseFloat(gv('figv').value) || 0;
-  gv('ftotal').value = (b + i).toFixed(2);
-}
-
-function updateDed() {
-  var cat = gv('fcat').value;
-  var pct = DEDUC[cat] !== undefined ? DEDUC[cat] : 0;
-  var badge = gv('dbadge');
-  var txt = gv('dtxt');
-  if (pct > 0) {
-    badge.className = 'dbadge yes';
-    txt.textContent = pct === 1 ? '100% deducible' : Math.round(pct*100) + '% deducible';
-  } else {
-    badge.className = 'dbadge no';
-    txt.textContent = 'No deducible';
-  }
-}
-
-function setSelect(id, val) {
-  if (!val) return;
-  var sel = gv(id);
-  var low = val.toLowerCase().split('/')[0].trim();
-  for (var i = 0; i < sel.options.length; i++) {
-    if (sel.options[i].value.toLowerCase().includes(low)) { sel.selectedIndex = i; return; }
-  }
-}
-
-function fillForm(data) {
-  if (data.fecha) gv('ffecha').value = data.fecha;
-  if (data.mes) setSelect('fmes', data.mes);
-  else if (data.fecha) {
-    var p = data.fecha.split('/');
-    if (p[1]) gv('fmes').selectedIndex = Math.max(0, parseInt(p[1]) - 1);
-  }
-  if (data.proveedor) gv('fprov').value = data.proveedor;
-  if (data.ruc) gv('fruc').value = data.ruc;
-  if (data.numero) gv('fnro').value = data.numero;
-  if (data.tipo) setSelect('ftipo', data.tipo);
-  if (data.categoria) setSelect('fcat', data.categoria);
-  if (data.descripcion) gv('fdesc').value = data.descripcion;
-  if (data.base != null) gv('fbase').value = parseFloat(data.base).toFixed(2);
-  if (data.igv != null) gv('figv').value = parseFloat(data.igv).toFixed(2);
-  if (data.total != null) gv('ftotal').value = parseFloat(data.total).toFixed(2);
-  else calcTotal();
-  if (data.pago) setSelect('fpago', data.pago);
-  updateDed();
-}
-
-function scanReceipt() {
-  if (!imgB64) { setStatus('Primero selecciona una imagen', 'error'); return; }
-  gv('bana').disabled = true;
-  setStatus('Analizando comprobante...', 'loading');
-
-  var prompt = 'Eres un asistente fiscal peruano. Analiza este comprobante y devuelve SOLO un JSON sin texto adicional ni backticks: {"fecha":"DD/MM/AAAA","proveedor":"nombre emisor","ruc":"RUC 11 digitos si visible","numero":"serie-correlativo","tipo":"Boleta|Factura|Ticket|Recibo electronico","categoria":"una de: Restaurantes / Alimentacion|Tecnologia / Equipos|Comunicaciones|Movilidad / Transporte|Servicios Profesionales|Libros / Capacitacion|Notaria / Registros|Utiles de oficina|Salud / Bienestar|Entretenimiento / Personal|Otros Profesionales","descripcion":"descripcion breve","base":numero,"igv":numero,"total":numero,"pago":"Efectivo|Tarjeta|Yape|Plin|Transferencia|App|Otro"}';
-
-  fetch(WORKER, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ image: imgB64, prompt: prompt })
+var SHEET_ID='15WZUlnW5IChtoqmC96IoBaUg_YNUGS0I';
+var WORKER='https://gastos-amb.alexfmb10.workers.dev';
+var imgB64=null;
+var DEDUC={'Restaurantes / Alimentacion':0.25,'Tecnologia / Equipos':1,'Comunicaciones':0.8,'Movilidad / Transporte':1,'Servicios Profesionales':1,'Libros / Capacitacion':1,'Notaria / Registros':1,'Utiles de oficina':1,'Salud / Bienestar':0,'Entretenimiento / Personal':0,'Otros Profesionales':1};
+var CE='gastos-amb@gastos-amb.iam.gserviceaccount.com';
+var TU='https://oauth2.googleapis.com/token';
+var PK='-----BEGIN PRIVATE KEY-----
+MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC7bwGLVnVEhEHT
+TUHM1OBVQJ6pHhizftbcTzRH8dTT8rEIb2ay4FcEfp/SIYZmie5A5+q8xfu6ym2L
+v7VGeMSu8mwechRHsYZOLj2X3gxAnD0TjQjdMGfHf0SZ+3vSQq1MbkPNb49U51L7
+miCp3djH1CF19OyGlAm6c2UEUBqKe5qlscD14ViwzmxHoeh+Jx/MD3rdDwXdPfIy
+D+e+UGYOzLGIY6pxNl3wFiRiQYI9ZVbq1ImlegUFTbyvG1JdrDQVM4witTick6Nz
+nF/6j8Qja0+m7fuurH5FBQjQvuU9BMZjR0TtJngOqT4L6nwWM/S4CvuNic1lzfY9
+1kkKxH6tAgMBAAECggEAJWVtubL/lTLNHl9S8k8DzkalEUl5tLBpJo4f+H3B0KLi
+mvP9GdHkUrd/5DE/q0w4Ttdm0JCw27EhP6l5fczBM0WXeFCbBr3e9dDIhbkuGSMD
+FZhFTTpn7lgQZCeWqhoXEQGMAhxQzOgVeLEk9LdYVfBXV71NBsHZGgwFeuGPlhLg
+pnnoWD3OetFp825qyQmgFgF0awUJvvLIXZKaVDLVcE2H17Er7HfRnYAH1OlI+gQr
+F0375g+7Z3SG1dEMsHRiDuWOxJ3j3NZ2IgvXMqHPfj3zSFVv5m4SF5oVpt5GuyqH
+kdb7CHy6qOT8h5LL9KFQAQpq1BzPvYBz/ZiIpJYW2QKBgQD40ascO94fe/1g7JWe
+AbefSq4VS1IjrWSaSuG66l+dJ0Fzvp8eOJ6YvkIn7imwIlxjkCghcfchVMIAJx46
+QPJkhuw/BdO+V46HE9ljTh8y37d81WxRB+5AVzQTCsxqokL3NpSc4cHFKNO8v1rs
+Yt+AdmWho6gMIC9yErfMZ1BJaQKBgQDA187tZegN6Vl4T7/CpLgxifg4GC6vw3Gc
+nZxkhaTgl2ksIk9daWRIZtQQF3JUAtLalpiXAwm17T/eukcPhGzlv0LPR7b/h3yR
+ZdscxcsZf59pqH2fv7X5fWoIR80aJgvQtEpxqqb2ndAI0YFXkjfGN/nN8YE8uKHy
+kG+ZhNf+pQKBgEUXQ2JFpXosncEKMMl9RJWw0QIMtjQ98498d43FguNKgTw4lEp6
+Al/7hLc9xMmp4Omsn9gZozvYIz6Tnisi2avcY0FkxtU1ztfnRRf0G2mvAW5ifP9L
+KncnP8iB2R1LDTlEKKQfdAThP1pL8F1vXwx20+W8Ye9sCICufeb+USbxAoGAV80q
+gv5GFKdtPBEbXzT+RFfsMyYXg6E6BjPgtAgBVNy7XwPUHNTSewCOhzEVtdh/RlUQ
+7pjMgA+gZ/lqR09lAYn+kj+1u0xl1BGLHOOVoGtyGnpDkEuKQCjw8Qo4ATLXaFPe
+HTi0wk6CHLG+8S86w75St4jA7fOmkLlghoZsjZ0CgYB00hYkC0cLg49Ht+Di1MZ/
+K8DqdCXg1IjlgKLFs7cwH2B14SPp5W+abFKqhBgdRpjEhtlcuHO3qFUiEEl1AGWT
+Dsem37soTolc7ec7NytIBsluCH9My8UrH6X7Lx5TWY02BJucR8rcX8Krf4PMrUex
+jRe/oU3EIE2rDM8wBFoKdw==
+-----END PRIVATE KEY-----
+';
+function g(id){return document.getElementById(id)}
+function setStatus(msg,type){var el=g('sbar');el.className='sbar show '+type;el.innerHTML=type==='loading'?'<div class="spin"></div>'+msg:msg}
+function clearStatus(){g('sbar').className='sbar'}
+g('finput').addEventListener('change',function(e){var file=e.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(ev){imgB64=ev.target.result.split(',')[1];g('pimg').src=ev.target.result;g('ubox').style.display='none';g('pwrap').style.display='block'};r.readAsDataURL(file)});
+g('bret').addEventListener('click',function(){imgB64=null;g('finput').value='';g('ubox').style.display='block';g('pwrap').style.display='none'});
+g('fbase').addEventListener('input',function(){g('ftotal').value=((parseFloat(g('fbase').value)||0)+(parseFloat(g('figv').value)||0)).toFixed(2)});
+g('figv').addEventListener('input',function(){g('ftotal').value=((parseFloat(g('fbase').value)||0)+(parseFloat(g('figv').value)||0)).toFixed(2)});
+g('fcat').addEventListener('change',function(){var pct=DEDUC[g('fcat').value]||0;if(pct>0){g('dbadge').className='dbadge yes';g('dtxt').textContent=pct===1?'100% deducible':Math.round(pct*100)+'% deducible'}else{g('dbadge').className='dbadge no';g('dtxt').textContent='No deducible'}});
+g('bana').addEventListener('click',function(){
+  if(!imgB64){setStatus('Primero selecciona una imagen','error');return}
+  g('bana').disabled=true;setStatus('Analizando comprobante...','loading');
+  fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:imgB64,prompt:'Analiza este comprobante peruano y devuelve SOLO JSON sin backticks: {"fecha":"DD/MM/AAAA","proveedor":"nombre","ruc":"RUC","numero":"serie-correlativo","tipo":"Boleta|Factura|Ticket","categoria":"Restaurantes / Alimentacion|Tecnologia / Equipos|Comunicaciones|Movilidad / Transporte|Servicios Profesionales|Libros / Capacitacion|Notaria / Registros|Utiles de oficina|Salud / Bienestar|Entretenimiento / Personal|Otros Profesionales","descripcion":"descripcion","base":0,"igv":0,"total":0,"pago":"Efectivo|Tarjeta|Yape|Plin|App"}'})})
+  .then(function(r){return r.json()})
+  .then(function(res){
+    if(res.error)throw new Error(res.error);
+    var d=JSON.parse((res.text||'{}').replace(/```json|```/g,'').trim());
+    if(d.fecha)g('ffecha').value=d.fecha;
+    if(d.proveedor)g('fprov').value=d.proveedor;
+    if(d.ruc)g('fruc').value=d.ruc;
+    if(d.numero)g('fnro').value=d.numero;
+    if(d.descripcion)g('fdesc').value=d.descripcion;
+    if(d.base!=null)g('fbase').value=parseFloat(d.base).toFixed(2);
+    if(d.igv!=null)g('figv').value=parseFloat(d.igv).toFixed(2);
+    if(d.total!=null)g('ftotal').value=parseFloat(d.total).toFixed(2);
+    if(d.fecha){var p=d.fecha.split('/');if(p[1])g('fmes').selectedIndex=Math.max(0,parseInt(p[1])-1)}
+    g('sform').style.display='block';setStatus('Datos extraidos. Verifica y corrige.','success');
+    setTimeout(clearStatus,4000);g('sform').scrollIntoView({behavior:'smooth'});
   })
-  .then(function(r) { return r.json(); })
-  .then(function(result) {
-    if (result.error) throw new Error(result.error);
-    var text = result.text || '{}';
-    var data = JSON.parse(text.replace(/```json|```/g, '').trim());
-    fillForm(data);
-    gv('sform').style.display = 'block';
-    setStatus('Datos extraídos. Verifica y corrige si es necesario.', 'success');
-    setTimeout(clearStatus, 4000);
-    gv('sform').scrollIntoView({ behavior: 'smooth' });
-  })
-  .catch(function(err) {
-    setStatus('Error: ' + err.message, 'error');
-    gv('bana').disabled = false;
-  });
+  .catch(function(err){setStatus('Error: '+err.message,'error');g('bana').disabled=false});
+});
+async function getToken(){
+  var now=Math.floor(Date.now()/1000);
+  function b64u(s){return btoa(s).replace(/=/g,'').replace(/+/g,'-').replace(///g,'_')}
+  var hdr=b64u(JSON.stringify({alg:'RS256',typ:'JWT'}));
+  var pay=b64u(JSON.stringify({iss:CE,scope:'https://www.googleapis.com/auth/spreadsheets',aud:TU,exp:now+3600,iat:now}));
+  var si=hdr+'.'+pay;
+  var ks=PK.replace('-----BEGIN PRIVATE KEY-----','').replace('-----END PRIVATE KEY-----','').replace(/
+/g,'').replace(/s/g,'');
+  var kd=Uint8Array.from(atob(ks),function(c){return c.charCodeAt(0)});
+  var ck=await crypto.subtle.importKey('pkcs8',kd.buffer,{name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'},false,['sign']);
+  var sig=await crypto.subtle.sign('RSASSA-PKCS1-v1_5',ck,new TextEncoder().encode(si));
+  var sb=btoa(String.fromCharCode.apply(null,new Uint8Array(sig))).replace(/=/g,'').replace(/+/g,'-').replace(///g,'_');
+  var r=await fetch(TU,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion='+si+'.'+sb});
+  var d=await r.json();return d.access_token;
 }
-
-async function getToken() {
-  var now = Math.floor(Date.now() / 1000);
-  function b64u(s) { return btoa(s).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_'); }
-  var hdr = b64u(JSON.stringify({alg:'RS256',typ:'JWT'}));
-  var pay = b64u(JSON.stringify({iss:CREDS_EMAIL,scope:'https://www.googleapis.com/auth/spreadsheets',aud:CREDS_TOKEN_URI,exp:now+3600,iat:now}));
-  var sigInput = hdr + '.' + pay;
-  var keyStr = CREDS_KEY.replace('-----BEGIN PRIVATE KEY-----','').replace('-----END PRIVATE KEY-----','').replace(/\s/g,'');
-  var keyDer = Uint8Array.from(atob(keyStr), function(c) { return c.charCodeAt(0); });
-  var cryptoKey = await crypto.subtle.importKey('pkcs8', keyDer.buffer, {name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'}, false, ['sign']);
-  var sig = await crypto.subtle.sign('RSASSA-PKCS1-v1_5', cryptoKey, new TextEncoder().encode(sigInput));
-  var sigB64 = btoa(String.fromCharCode.apply(null, new Uint8Array(sig))).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
-  var jwt = sigInput + '.' + sigB64;
-  var r = await fetch(CREDS_TOKEN_URI, {method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion='+jwt});
-  var d = await r.json();
-  return d.access_token;
-}
-
-async function saveToSheets() {
-  setStatus('Guardando en Google Sheets...', 'loading');
-  gv('bsav').disabled = true;
-  try {
-    var token = await getToken();
-    var cat = gv('fcat').value;
-    var pct = DEDUC[cat] !== undefined ? DEDUC[cat] : 0;
-    var base = parseFloat(gv('fbase').value) || 0;
-    var igv = parseFloat(gv('figv').value) || 0;
-    var total = parseFloat(gv('ftotal').value) || (base + igv);
-    var deducible = parseFloat((total * pct).toFixed(2));
-    var proveedor = gv('fprov').value;
-    var fecha = gv('ffecha').value;
-    var row = [fecha, gv('fmes').value, proveedor, gv('fruc').value, gv('fnro').value, gv('ftipo').value, cat, gv('fdesc').value, base, igv, total, pct, deducible, gv('fpago').value, gv('fobs').value];
-    var sname = encodeURIComponent('📥 REGISTRO');
-    var cr = await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+'/values/'+sname+'!A:A?majorDimension=COLUMNS', {headers:{Authorization:'Bearer '+token}});
-    var cd = await cr.json();
-    var nextRow = Math.max((cd.values && cd.values[0] ? cd.values[0].length : 3) + 1, 4);
-    var sr = await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+'/values/'+sname+'!A'+nextRow+':O'+nextRow+'?valueInputOption=USER_ENTERED', {method:'PUT',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({values:[row]})});
-    if (!sr.ok) { var e = await sr.json(); throw new Error(e.error && e.error.message ? e.error.message : 'Error Sheets'); }
-    gv('sup').style.display = 'none';
-    gv('sform').style.display = 'none';
-    clearStatus();
-    gv('okdet').innerHTML = '<div class="row"><span>Proveedor</span><span>'+proveedor+'</span></div><div class="row"><span>Fecha</span><span>'+fecha+'</span></div><div class="row"><span>Total</span><span>S/. '+total.toFixed(2)+'</span></div><div class="row"><span>Deducible</span><span>S/. '+deducible.toFixed(2)+'</span></div><div class="row"><span>Fila en Sheet</span><span>#'+nextRow+'</span></div>';
-    gv('okscr').style.display = 'block';
-    window.scrollTo({top:0,behavior:'smooth'});
-  } catch(err) {
-    setStatus('Error al guardar: ' + err.message, 'error');
-    gv('bsav').disabled = false;
-  }
-}
-
-function resetApp() {
-  imgB64 = null;
-  gv('finput').value = '';
-  gv('ubox').style.display = 'block';
-  gv('pwrap').style.display = 'none';
-  gv('sup').style.display = 'block';
-  gv('sform').style.display = 'none';
-  gv('okscr').style.display = 'none';
-  gv('bana').disabled = false;
-  gv('bsav').disabled = false;
-  clearStatus();
-  ['ffecha','fprov','fruc','fnro','fdesc','fbase','figv','ftotal','fobs'].forEach(function(id) { gv(id).value = ''; });
-  window.scrollTo({top:0,behavior:'smooth'});
-}
+g('bsav').addEventListener('click',async function(){
+  setStatus('Guardando en Google Sheets...','loading');g('bsav').disabled=true;
+  try{
+    var token=await getToken();
+    var cat=g('fcat').value,pct=DEDUC[cat]||0;
+    var base=parseFloat(g('fbase').value)||0,igv=parseFloat(g('figv').value)||0;
+    var total=parseFloat(g('ftotal').value)||(base+igv);
+    var ded=parseFloat((total*pct).toFixed(2));
+    var prov=g('fprov').value,fecha=g('ffecha').value;
+    var row=[fecha,g('fmes').value,prov,g('fruc').value,g('fnro').value,g('ftipo').value,cat,g('fdesc').value,base,igv,total,pct,ded,g('fpago').value,g('fobs').value];
+    var sn=encodeURIComponent('📥 REGISTRO');
+    var cr=await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+'/values/'+sn+'!A:A?majorDimension=COLUMNS',{headers:{Authorization:'Bearer '+token}});
+    var cd=await cr.json();
+    var nr=Math.max((cd.values&&cd.values[0]?cd.values[0].length:3)+1,4);
+    var sr=await fetch('https://sheets.googleapis.com/v4/spreadsheets/'+SHEET_ID+'/values/'+sn+'!A'+nr+':O'+nr+'?valueInputOption=USER_ENTERED',{method:'PUT',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({values:[row]})});
+    if(!sr.ok){var e=await sr.json();throw new Error(e.error&&e.error.message?e.error.message:'Error Sheets')}
+    g('sup').style.display='none';g('sform').style.display='none';clearStatus();
+    g('okdet').innerHTML='<div class="row"><span>Proveedor</span><span>'+prov+'</span></div><div class="row"><span>Fecha</span><span>'+fecha+'</span></div><div class="row"><span>Total</span><span>S/. '+total.toFixed(2)+'</span></div><div class="row"><span>Deducible</span><span>S/. '+ded.toFixed(2)+'</span></div><div class="row"><span>Fila</span><span>#'+nr+'</span></div>';
+    g('okscr').style.display='block';window.scrollTo({top:0,behavior:'smooth'});
+  }catch(err){setStatus('Error: '+err.message,'error');g('bsav').disabled=false}
+});
+function resetAll(){imgB64=null;g('finput').value='';g('ubox').style.display='block';g('pwrap').style.display='none';g('sup').style.display='block';g('sform').style.display='none';g('okscr').style.display='none';g('bana').disabled=false;g('bsav').disabled=false;clearStatus();['ffecha','fprov','fruc','fnro','fdesc','fbase','figv','ftotal','fobs'].forEach(function(id){g(id).value=''});window.scrollTo({top:0,behavior:'smooth'})}
+g('bnew').addEventListener('click',resetAll);g('bok').addEventListener('click',resetAll);
 </script>
 </body>
 </html>
